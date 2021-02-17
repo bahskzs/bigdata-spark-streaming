@@ -1,0 +1,11 @@
+server:
+  port: 9527
+  servlet:
+    context-path: /cat-web
+spring:
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+logging:
+  pattern:
+    console: "%d{HH:mm:ss} - %msg%n"

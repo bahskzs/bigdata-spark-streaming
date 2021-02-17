@@ -1,0 +1,5 @@
+# Project exclude paths
+/flume-custom/target/
+/kafka-api/target/
+/log-service/target/
+/ss-api/target/
