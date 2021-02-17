@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author bahsk
  * @createTime 2021-02-14 21:50
- * @description
+ * @description 拦截器改造： 根据body中含有的字符往header中添加相关内容 demo:/sources/flume01.conf
  */
 public class DomainIntercepter implements Interceptor {
 
