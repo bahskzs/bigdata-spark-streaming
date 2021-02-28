@@ -1,18 +1,15 @@
 package com.yqy.bigdata.ss
 
-
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
  * @author bahsk
- * @createTime 2021-02-16 22:28
- * @description 基于SS的 wordcount
- *              数据源 : netcat nc -lk 9527
+ * @createTime 2021-02-28 20:45
+ * @description 统计词频，并写入数据库，ss整合spark sql
  */
-object NetWorkCountApp extends App {
-
-
+object NetWorkCountSparkSQLApp extends App {
   // 入口点
   val conf = new SparkConf()
     .setMaster("local[2]").setAppName("NetworkWordCount")
@@ -36,8 +33,24 @@ object NetWorkCountApp extends App {
   val lines = ssc.socketTextStream("master610", 9527)
 
   // TODO... 业务逻辑处理
-  val result = lines.flatMap(_.split(",")).
-    map((_,1)).reduceByKey(_+_).updateStateByKey[Int](updateFunction _).saveAsTextFiles("data")
+  val result = lines.flatMap(_.split(","))
+
+
+  result.foreachRDD( rdd => {
+  val spark = SparkSession.builder.config(rdd.sparkContext.getConf).getOrCreate()
+  import spark.implicits._
+
+  // Convert RDD[String] to DataFrame
+  val wordsDataFrame = rdd.toDF("word")
+
+  // Create a temporary view
+  wordsDataFrame.createOrReplaceTempView("words")
+
+  // Do word count on DataFrame using SQL and print it
+  val wordCountsDataFrame =
+    spark.sql("select word, count(*) as total from words group by word")
+  wordCountsDataFrame.show()
+    })
 
   ssc.start()
   ssc.awaitTermination()

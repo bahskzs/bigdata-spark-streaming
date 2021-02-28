@@ -1,18 +1,15 @@
 package com.yqy.bigdata.ss
 
-
+import com.yqy.bigdata.util.MySQLUtils
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
  * @author bahsk
- * @createTime 2021-02-16 22:28
- * @description 基于SS的 wordcount
- *              数据源 : netcat nc -lk 9527
+ * @createTime 2021-02-28 20:45
+ * @description 统计词频，并写入数据库
  */
-object NetWorkCountApp extends App {
-
-
+object ForeachRDDWordCountApp extends App {
   // 入口点
   val conf = new SparkConf()
     .setMaster("local[2]").setAppName("NetworkWordCount")
@@ -37,7 +34,21 @@ object NetWorkCountApp extends App {
 
   // TODO... 业务逻辑处理
   val result = lines.flatMap(_.split(",")).
-    map((_,1)).reduceByKey(_+_).updateStateByKey[Int](updateFunction _).saveAsTextFiles("data")
+    map((_,1)).reduceByKey(_+_).updateStateByKey[Int](updateFunction _)
+
+
+  result.foreachRDD( rdd =>
+    rdd.foreachPartition { partitionOfRecords =>
+      val connection = MySQLUtils.getConnection()
+      partitionOfRecords.foreach(
+
+        record => {
+          val sql = s"insert into wc2(word,cnt,data_status) values('${record._1}',${record._2})"
+          connection.createStatement().execute(sql)
+        }
+      )
+      connection.close()
+    })
 
   ssc.start()
   ssc.awaitTermination()

@@ -30,7 +30,7 @@ public class KafkaAdminTest {
         props.put("bootstrap.servers", "master610:9092");
         admin = AdminClient.create(props);
 
-        topic = "test";
+        topic = "test-topic";
 
         newTopic = new NewTopic(topic,1, (short) 1);
         collections.add(newTopic);
