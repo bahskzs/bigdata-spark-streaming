@@ -45,8 +45,8 @@ public class KafkaProducerTest {
 
     @Test
     public void publishesRecords() {
-        topic = "jiangzh-topic";
-        for (int i = 0; i < 5; i++) {
+        topic = "test";
+        for (int i = 0; i < 15; i++) {
             System.out.println("第" + i + "条");
             producer.send(new ProducerRecord<String, String>(topic, "第"+Integer.toString(i)+"cat"));
         }

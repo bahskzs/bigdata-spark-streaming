@@ -28,7 +28,7 @@ object SSKafkaIntegrationApp extends App {
     "enable.auto.commit" -> (false: java.lang.Boolean)
   )
 
-  val topics = Array("test", "topicB")
+  val topics = Array("test")
   val stream = KafkaUtils.createDirectStream[String, String](
     ssc,
     PreferConsistent,
