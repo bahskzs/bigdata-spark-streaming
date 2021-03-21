@@ -18,6 +18,7 @@
         <flume.version>1.9.0</flume.version>
         <kafka.version>2.7.0</kafka.version>
         <spark.version>3.0.0</spark.version>
+        <scalikejdbc.version>3.4.0</scalikejdbc.version>
     </properties>
 
     <artifactId>ss-api</artifactId>
@@ -70,6 +71,19 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-streaming-kafka-0-10_${scala.version}</artifactId>
             <version>${spark.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc_${scala.version}</artifactId>
+            <version>${scalikejdbc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc-config_${scala.version}</artifactId>
+            <version>${scalikejdbc.version}</version>
         </dependency>
     </dependencies>
 </project>
